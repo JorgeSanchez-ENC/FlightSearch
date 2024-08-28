@@ -17,11 +17,6 @@ public class SearchService {
     AccessTokenService accessTokenService;
 
     OkHttpClient client = new OkHttpClient();
-    @Value("${apiKey}")
-    String apiKey;
-    @Value("${apiSecret}")
-    String apiSecret;
-
 
     public SearchService() throws IOException {
     }
@@ -29,7 +24,7 @@ public class SearchService {
     public String flightOfferSearch(String originLocationCode, String destinationLocationCode,
         String departureDate, String returnDate, Integer adults, String currencyCode, Boolean nonStop
     ) throws IOException {
-        String token = accessTokenService.getAccessToken(apiKey,apiSecret);
+        String token = accessTokenService.getAccessToken();
 
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v2/shopping/flight-offers").newBuilder()
                 .addQueryParameter("originLocationCode",originLocationCode)

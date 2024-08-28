@@ -3,13 +3,19 @@ package com.flightsearch.backend.Services;
 
 import okhttp3.*;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
 public class AccessTokenService {
-    public String getAccessToken( String apiKey, String apiSecret) throws IOException {
+    @Value("${apiKey}")
+    String apiKey;
+    @Value("${apiSecret}")
+    String apiSecret;
+
+    public String getAccessToken() throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody formBody = new FormBody.Builder()
                 .add("grant_type", "client_credentials")
