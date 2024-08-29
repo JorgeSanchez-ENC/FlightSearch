@@ -1,33 +1,33 @@
 package com.flightsearch.backend.Services;
 
-import okhttp3.*;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
-public class SearchPriceService {
+public class AirportCodeService {
     @Autowired
     AccessTokenService accessTokenService;
 
     OkHttpClient client = new OkHttpClient();
 
+    public String airportSearchByKeyword(String keyword) throws IOException {
+        String token = accessTokenService.getAccessToken();
 
-    public String flightOfferPriceSearch(String offerInfo) throws IOException {
-         String token = accessTokenService.getAccessToken();
+        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v1/reference-data/locations").newBuilder()
+                .addQueryParameter("subType","AIRPORT")
+                .addQueryParameter("keyword",keyword);
 
-        RequestBody body = RequestBody.create(
-                offerInfo,
-                MediaType.parse("application/json")
-        );
+        HttpUrl url = urlBuilder.build();
 
         Request request = new Request.Builder()
-                .url("https://test.api.amadeus.com/v1/shopping/flight-offers/pricing")
-                .post(body)
+                .url(url)
                 .addHeader("Authorization","Bearer "+ token)
-                .addHeader("Content-Type","application/json")
                 .build();
 
         try(Response response = client.newCall(request).execute()){
@@ -36,5 +36,9 @@ public class SearchPriceService {
             assert response.body() != null;
             return response.body().string();
         }
+
+
+
+
     }
 }
