@@ -4,6 +4,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,12 @@ import java.util.Map;
 public class SearchService {
     @Autowired
     AccessTokenService accessTokenService;
+
+    @Autowired
+    static AirportCodeService airportCodeService;
+
+    @Autowired
+    static AirlineInformationService airlineInformationService;
 
     OkHttpClient client = new OkHttpClient();
 
@@ -52,5 +60,37 @@ public class SearchService {
         }
 
 
+    }
+
+    private static String addAirportAndAirlinesCommonNames(String originalJson) throws IOException {
+        JSONObject jsonResponse =new JSONObject(originalJson);
+        JSONArray dataArray = jsonResponse.getJSONArray("data");
+
+        for(int i = 0; i < dataArray.length(); i++){
+            JSONObject flightOffer = dataArray.getJSONObject(i);
+            JSONArray itineraries = flightOffer.getJSONArray("itineraries");
+            for(int j = 0; j < itineraries.length(); j++){
+                JSONObject itinerarie = itineraries.getJSONObject(j);
+                JSONArray segments = itinerarie.getJSONArray("segments");
+                for(int k = 0; k < segments.length(); k++){
+                    JSONObject segment = segments.getJSONObject(k);
+
+                    String deptIATA = segment.getJSONObject("departure").getString("iataCode");
+                    String deptAirportName = airportCodeService.airportSearchByKeyword(deptIATA);
+                    segment.getJSONObject("departure").put("airportCommonName",deptAirportName);
+
+                    String arrIATA = segment.getJSONObject("arrival").getString("iataCode");
+                    String arrAirportName = airportCodeService.airportSearchByKeyword(arrIATA);
+                    segment.getJSONObject("arrival").put("airportCommonName",arrAirportName);
+
+                    String carrierCode = segment.getString("carierCode");
+                    String airlineName = airlineInformationService.airlineCodeLookUp(carrierCode);
+                    segment.put("airlineCommonName",airlineName);
+
+                }
+            }
+        }
+
+        return jsonResponse.toString();
     }
 }
