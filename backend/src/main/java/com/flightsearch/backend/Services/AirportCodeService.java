@@ -4,6 +4,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,7 @@ public class AirportCodeService {
 
     OkHttpClient client = new OkHttpClient();
 
-    public String airportSearchByKeyword(String keyword) throws IOException {
+    public String airportCodeSearchByKeyword(String keyword) throws IOException {
         String token = accessTokenService.getAccessToken();
 
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v1/reference-data/locations").newBuilder()
@@ -32,13 +34,14 @@ public class AirportCodeService {
 
         try(Response response = client.newCall(request).execute()){
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
             assert response.body() != null;
             return response.body().string();
         }
+    }
 
-
-
-
+    public String airportNameSearchByKeyword(String keyword) throws IOException {
+        JSONObject jsonResponse = new JSONObject(airportCodeSearchByKeyword(keyword));
+        JSONArray data = jsonResponse.getJSONArray("data");
+        return data.getJSONObject(0).getString("name");
     }
 }

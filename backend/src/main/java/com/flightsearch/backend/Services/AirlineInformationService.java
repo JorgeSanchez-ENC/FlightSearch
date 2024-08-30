@@ -4,6 +4,8 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,11 @@ public class AirlineInformationService {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
             assert response.body() != null;
-            return response.body().string();
+
+            JSONObject jsonResponse = new JSONObject(response.body().string());
+            JSONArray data = jsonResponse.getJSONArray("data");
+
+            return data.getJSONObject(0).getString("businessName");
         }
     }
 }

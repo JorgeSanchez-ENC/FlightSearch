@@ -76,11 +76,11 @@ public class SearchService {
                     JSONObject segment = segments.getJSONObject(k);
 
                     String deptIATA = segment.getJSONObject("departure").getString("iataCode");
-                    String deptAirportName = airportCodeService.airportSearchByKeyword(deptIATA);
+                    String deptAirportName = airportCodeService.airportNameSearchByKeyword(deptIATA);
                     segment.getJSONObject("departure").put("airportCommonName",deptAirportName);
 
                     String arrIATA = segment.getJSONObject("arrival").getString("iataCode");
-                    String arrAirportName = airportCodeService.airportSearchByKeyword(arrIATA);
+                    String arrAirportName = airportCodeService.airportNameSearchByKeyword(arrIATA);
                     segment.getJSONObject("arrival").put("airportCommonName",arrAirportName);
 
                     String carrierCode = segment.getString("carierCode");
