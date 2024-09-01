@@ -18,7 +18,7 @@ public class AirlineInformationService {
 
     OkHttpClient client = new OkHttpClient();
 
-    public String airlineCodeLookUp(String airlineCode) throws IOException {
+    public String airlineNameLookUp(String airlineCode) throws IOException {
         String token = accessTokenService.getAccessToken();
 
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v1/reference-data/airlines").newBuilder()

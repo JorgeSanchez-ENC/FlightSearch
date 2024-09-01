@@ -70,8 +70,8 @@ public class SearchService {
             JSONObject flightOffer = dataArray.getJSONObject(i);
             JSONArray itineraries = flightOffer.getJSONArray("itineraries");
             for(int j = 0; j < itineraries.length(); j++){
-                JSONObject itinerarie = itineraries.getJSONObject(j);
-                JSONArray segments = itinerarie.getJSONArray("segments");
+                JSONObject itinerary = itineraries.getJSONObject(j);
+                JSONArray segments = itinerary.getJSONArray("segments");
                 for(int k = 0; k < segments.length(); k++){
                     JSONObject segment = segments.getJSONObject(k);
 
@@ -84,7 +84,7 @@ public class SearchService {
                     segment.getJSONObject("arrival").put("airportCommonName",arrAirportName);
 
                     String carrierCode = segment.getString("carierCode");
-                    String airlineName = airlineInformationService.airlineCodeLookUp(carrierCode);
+                    String airlineName = airlineInformationService.airlineNameLookUp(carrierCode);
                     segment.put("airlineCommonName",airlineName);
 
                 }
