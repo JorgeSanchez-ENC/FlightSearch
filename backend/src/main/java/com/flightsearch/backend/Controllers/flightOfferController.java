@@ -9,15 +9,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+
 @RestController
 @RequestMapping("/flightOffer")
 public class flightOfferController {
     @Autowired
     SearchService searchService;
 
-    @PostMapping()
-    public ResponseEntity<?> getFlightOffers(@RequestBody String originLocationCode, @RequestBody String destinationLocationCode,
-     @RequestBody String departureDate, @RequestBody String returnDate, @RequestBody Integer adults, @RequestBody String currencyCode, @RequestBody Boolean nonStop){
+    @GetMapping()
+    public ResponseEntity<?> getFlightOffers(@RequestParam String originLocationCode, @RequestParam String destinationLocationCode,
+     @RequestParam String departureDate, @RequestParam(required = false) String returnDate, @RequestParam Integer adults, @RequestParam String currencyCode, @RequestParam Boolean nonStop){
+        System.out.println(departureDate);
         try{
             String response = searchService.flightOfferSearch(originLocationCode,destinationLocationCode,departureDate
             ,returnDate,adults,currencyCode,nonStop);

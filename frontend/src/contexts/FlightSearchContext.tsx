@@ -15,7 +15,7 @@ interface FlightSearchContextType {
     setParams: React.Dispatch<React.SetStateAction<params>>;
 }
 
-const FlightSearchContext = createContext<FlightSearchContextType | null>(null);
+const FlightSearchContext = createContext<any>(null);
 
 
 export const FlightSearchContextProvider = ({children} :{children : ReactNode}) =>{

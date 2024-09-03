@@ -22,6 +22,49 @@ public class AirportCodeService {
 
     OkHttpClient client = new OkHttpClient();
 
+    String mockResponse = "{\n" +
+            "  \"meta\": {\n" +
+            "    \"count\": 2,\n" +
+            "    \"links\": {\n" +
+            "      \"self\": \"https://test.api.amadeus.com/v1/reference-data/locations?subType=CITY,AIRPORT&keyword=MUC&countryCode=DE\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"data\": [\n" +
+            "    {\n" +
+            "      \"type\": \"location\",\n" +
+            "      \"subType\": \"AIRPORT\",\n" +
+            "      \"name\": \"MUNICH INTERNATIONAL\",\n" +
+            "      \"detailedName\": \"MUNICH/DE:MUNICH INTERNATIONAL\",\n" +
+            "      \"id\": \"AMUC\",\n" +
+            "      \"self\": {\n" +
+            "        \"href\": \"https://test.api.amadeus.com/v1/reference-data/locations/AMUC\",\n" +
+            "        \"methods\": [\n" +
+            "          \"GET\"\n" +
+            "        ]\n" +
+            "      },\n" +
+            "      \"timeZoneOffset\": \"+02:00\",\n" +
+            "      \"iataCode\": \"MUC\",\n" +
+            "      \"geoCode\": {\n" +
+            "        \"latitude\": 48.35378,\n" +
+            "        \"longitude\": 11.78609\n" +
+            "      },\n" +
+            "      \"address\": {\n" +
+            "        \"cityName\": \"MUNICH\",\n" +
+            "        \"cityCode\": \"MUC\",\n" +
+            "        \"countryName\": \"GERMANY\",\n" +
+            "        \"countryCode\": \"DE\",\n" +
+            "        \"regionCode\": \"EUROP\"\n" +
+            "      },\n" +
+            "      \"analytics\": {\n" +
+            "        \"travelers\": {\n" +
+            "          \"score\": 27\n" +
+            "        }\n" +
+            "      }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+
     public String commonSearch(String keyword) throws IOException {
         String token = accessTokenService.getAccessToken();
 
@@ -36,11 +79,13 @@ public class AirportCodeService {
                 .addHeader("Authorization","Bearer "+ token)
                 .build();
 
-        try(Response response = client.newCall(request).execute()){
+        /*try(Response response = client.newCall(request).execute()){
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
             assert response.body() != null;
-            return response.body().string();
-        }
+            //return response.body().string();
+
+        }*/
+        return mockResponse;
     }
 
     public List<Map<String,String>> airportCodeSearchByKeyword(String keyword) throws IOException {
@@ -62,7 +107,6 @@ public class AirportCodeService {
             airportCodes.add(airportMap);
 
         }
-
         return airportCodes;
     }
 
