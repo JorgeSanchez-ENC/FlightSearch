@@ -1,14 +1,14 @@
-import React, {useContext, useState} from "react";
-import { Form, Button, DatePicker,InputNumber,Select,Checkbox, AutoCompleteProps, AutoComplete } from "antd";
-import dayjs, {Dayjs} from "dayjs";
-import AirportSearchBar from "../AirportSearchBar";
+import React, {useContext} from "react";
+import { Form, Button, DatePicker,InputNumber,Select,Checkbox, AutoCompleteProps, AutoComplete, Typography, Row, Col } from "antd";
+import dayjs from "dayjs";
 import { RangePickerProps } from "antd/es/date-picker";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import FlightResultsContext from "../../contexts/FlightResultsContext";
+import "./index.css";
 
 const {RangePicker} = DatePicker;
-const {Option} = Select;
+const { Title, Paragraph} = Typography;
 
 const SearchForm:React.FC = () =>{
     const {setFlightResults} = useContext(FlightResultsContext);
@@ -65,93 +65,112 @@ const SearchForm:React.FC = () =>{
     };
 
     return(
-        <Form onFinish={handleSubmit} layout="vertical">
-            <Form.Item 
-                name={'originLocationCode'} 
-                label={'Departure Airport'}
-                //rules={[{required: true, message: 'Please select a departure airport'}]}
-            >
-                        <AutoComplete
-                            options = {options}
-                            onSearch={handleSearch}
-                            placeholder = "Search your airport"
-                        >
+        <div className="searchContainer">
+            <Row> 
+                <Col span={24}>
+                <Title level={3}> Flight Search</Title> 
+                </Col>
+                
+            </Row>
+            <Row>
+                <Col span={24}>
+                    <Form onFinish={handleSubmit} layout="horizontal"
+                            
+                            >
+                                <Form.Item 
+                                    name={'originLocationCode'} 
+                                    label={'Departure Airport'}
+                                    rules={[{required: true, message: 'Please select a departure airport'}]}
+                                >
+                                            <AutoComplete
+                                                options = {options}
+                                                onSearch={handleSearch}
+                                                placeholder = "Search your airport"
+                                            >
+                
+                                            </AutoComplete>
+                                </Form.Item>
+                                <Form.Item 
+                                    name={'destinationLocationCode'} 
+                                    label={'Arrival Airport'}
+                                    rules={[{required: true, message: 'Please select an arrival airport'}]}
+                                >
+                                            <AutoComplete
+                                                options = {options}
+                                                onSearch={handleSearch}
+                                                placeholder = "Search your airport"
+                                            >
+                
+                                            </AutoComplete>
+                                </Form.Item>
+                
+                                
+                                <Form.Item
+                                    name={'dates'}
+                                    label={'Dates'}
+                                    rules={[{required: true, message: 'Please select at least the departure date'}]}
+                                >
+                                    <RangePicker
+                                        allowEmpty={[false, true]}
+                                        disabledDate={disabledDate}
+                                        placeholder={['Departure date', 'Return date']}
+                                    >
+                
+                                    </RangePicker>
+                                </Form.Item>
+                
+                                <Form.Item
+                                    name={'adults'}
+                                    label={'Number of Adults'}
+                                    rules={[{required: true, message: 'Please select the number of adults'}]}
+                                    initialValue={1}
+                                >
+                                    <InputNumber
+                                        min={1}
 
-                        </AutoComplete>
-            </Form.Item>
-            <Form.Item 
-                name={'destinationLocationCode'} 
-                label={'Arrival Airport'}
-                //rules={[{required: true, message: 'Please select an arrival airport'}]}
-            >
-                        <AutoComplete
-                            options = {options}
-                            onSearch={handleSearch}
-                            placeholder = "Search your airport"
-                        >
+                                    >
+                                    </InputNumber>
+                                </Form.Item>
+                
+                                <Form.Item
+                                    name={'currencyCode'}
+                                    label={'Currency'}
+                                    rules={[{required: true, message: 'Please select the currency'}]}
+                                    initialValue={'USD'}
+                                >
+                                    <Select 
+                                        options={[{value:'USD', label:'USD'}, {value:'MXN',label:'MXN'}, {value:'EUR',label:'EUR'}]}
+                                    >
+                                    </Select>
+                                </Form.Item>
+                
+                                <Form.Item
+                                    name={'nonStop'}
+                                    label={'Non-stop'}
+                                    valuePropName="checked"
+                                    initialValue={false}
+                                    //rules={[{required: true, message: 'Please select if you want stops'}]}
+                                >
+                                    <Checkbox>
+                
+                                    </Checkbox>
+                                </Form.Item>
+                
+                                <Form.Item>
+                                    <Button
+                                        type="primary"
+                                        htmlType="submit"
+                                    >
+                                        Search
+                                    </Button>
+                                </Form.Item>
+                    </Form>
+                
+                </Col>
+            </Row>
 
-                        </AutoComplete>
-            </Form.Item>
+        </div>
 
-            
-            <Form.Item
-                name={'dates'}
-                label={'Departure and Return Dates'}
-                rules={[{required: true, message: 'Please select a departure date'}]}
-            >
-                <RangePicker
-                    allowEmpty={[false, true]}
-                    disabledDate={disabledDate}
-                >
-
-                </RangePicker>
-            </Form.Item>
-
-            <Form.Item
-                name={'adults'}
-                label={'Number of Adults'}
-                rules={[{required: true, message: 'Please select the number of adults'}]}
-            >
-                <InputNumber
-                    min={1}
-                    defaultValue={1}
-                >
-                </InputNumber>
-            </Form.Item>
-
-            <Form.Item
-                name={'currencyCode'}
-                label={'Currency'}
-                rules={[{required: true, message: 'Please select the currency'}]}
-                initialValue={'USD'}
-            >
-                <Select 
-                    options={[{value:'USD', label:'USD'}, {value:'MXN',label:'MXN'}, {value:'EUR',label:'EUR'}]}
-                >
-                </Select>
-            </Form.Item>
-
-            <Form.Item
-                name={'nonStop'}
-                label={'Non-stop'}
-                valuePropName="checked"
-                initialValue={false}
-                //rules={[{required: true, message: 'Please select if you want stops'}]}
-            >
-                <Checkbox>
-
-                </Checkbox>
-            </Form.Item>
-
-            <Form.Item>
-                <Button
-                    type="primary"
-                    htmlType="submit"
-                >
-                    Search
-                </Button>
-            </Form.Item>
-        </Form>
     )
 };
 

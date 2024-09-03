@@ -51,14 +51,17 @@ public class SearchService {
             "              \"departure\": {\n" +
             "                \"iataCode\": \"SYD\",\n" +
             "                \"terminal\": \"1\",\n" +
-            "                \"at\": \"2021-11-01T11:35:00\"\n" +
+            "                \"at\": \"2021-11-01T11:35:00\",\n" +
+            "                \"airportCommonName\": \"Example name\"\n" +
             "              },\n" +
             "              \"arrival\": {\n" +
             "                \"iataCode\": \"MNL\",\n" +
             "                \"terminal\": \"2\",\n" +
-            "                \"at\": \"2021-11-01T16:50:00\"\n" +
+            "                \"at\": \"2021-11-01T16:50:00\",\n" +
+            "                \"airportCommonName\": \"Example name\"\n" +
             "              },\n" +
             "              \"carrierCode\": \"PR\",\n" +
+            "              \"airlineCommonName\": \"Example name airline\",\n" +
             "              \"number\": \"212\",\n" +
             "              \"aircraft\": {\n" +
             "                \"code\": \"333\"\n" +
@@ -75,13 +78,16 @@ public class SearchService {
             "              \"departure\": {\n" +
             "                \"iataCode\": \"MNL\",\n" +
             "                \"terminal\": \"1\",\n" +
-            "                \"at\": \"2021-11-01T19:20:00\"\n" +
+            "                \"at\": \"2021-11-01T19:20:00\",\n" +
+            "                \"airportCommonName\": \"Example name\"\n" +
             "              },\n" +
             "              \"arrival\": {\n" +
             "                \"iataCode\": \"BKK\",\n" +
-            "                \"at\": \"2021-11-01T21:50:00\"\n" +
+            "                \"at\": \"2021-11-01T21:50:00\",\n" +
+            "                \"airportCommonName\": \"Example name\"\n" +
             "              },\n" +
             "              \"carrierCode\": \"PR\",\n" +
+            "              \"airlineCommonName\": \"Example name airline\",\n" +
             "              \"number\": \"732\",\n" +
             "              \"aircraft\": {\n" +
             "                \"code\": \"320\"\n" +
@@ -174,14 +180,17 @@ public class SearchService {
             "              \"departure\": {\n" +
             "                \"iataCode\": \"SYD\",\n" +
             "                \"terminal\": \"1\",\n" +
-            "                \"at\": \"2021-11-01T11:35:00\"\n" +
+            "                \"at\": \"2021-11-01T11:35:00\",\n" +
+            "                \"airportCommonName\": \"Example name\"\n" +
             "              },\n" +
             "              \"arrival\": {\n" +
             "                \"iataCode\": \"MNL\",\n" +
             "                \"terminal\": \"2\",\n" +
-            "                \"at\": \"2021-11-01T16:50:00\"\n" +
+            "                \"at\": \"2021-11-01T16:50:00\",\n" +
+            "                \"airportCommonName\": \"Example name\"\n" +
             "              },\n" +
             "              \"carrierCode\": \"PR\",\n" +
+            "              \"airlineCommonName\": \"Example name airline\",\n" +
             "              \"number\": \"212\",\n" +
             "              \"aircraft\": {\n" +
             "                \"code\": \"333\"\n" +
@@ -198,21 +207,24 @@ public class SearchService {
             "              \"departure\": {\n" +
             "                \"iataCode\": \"MNL\",\n" +
             "                \"terminal\": \"1\",\n" +
-            "                \"at\": \"2021-11-01T21:40:00\"\n" +
+            "                \"at\": \"2021-11-01T20:50:00\",\n" +
+            "                \"airportCommonName\": \"Example name\"\n" +
             "              },\n" +
             "              \"arrival\": {\n" +
             "                \"iataCode\": \"BKK\",\n" +
-            "                \"at\": \"2021-11-02T00:10:00\"\n" +
+            "                \"at\": \"2021-11-01T23:10:00\",\n" +
+            "                \"airportCommonName\": \"Example name\"\n" +
             "              },\n" +
             "              \"carrierCode\": \"PR\",\n" +
-            "              \"number\": \"740\",\n" +
+            "              \"airlineCommonName\": \"Example name airline\",\n" +
+            "              \"number\": \"738\",\n" +
             "              \"aircraft\": {\n" +
             "                \"code\": \"321\"\n" +
             "              },\n" +
             "              \"operating\": {\n" +
             "                \"carrierCode\": \"PR\"\n" +
             "              },\n" +
-            "              \"duration\": \"PT3H30M\",\n" +
+            "              \"duration\": \"PT3H20M\",\n" +
             "              \"id\": \"4\",\n" +
             "              \"numberOfStops\": 0,\n" +
             "              \"blacklistedInEU\": false\n" +
@@ -222,8 +234,8 @@ public class SearchService {
             "      ],\n" +
             "      \"price\": {\n" +
             "        \"currency\": \"EUR\",\n" +
-            "        \"total\": \"355.34\",\n" +
-            "        \"base\": \"255.00\",\n" +
+            "        \"total\": \"365.34\",\n" +
+            "        \"base\": \"265.00\",\n" +
             "        \"fees\": [\n" +
             "          {\n" +
             "            \"amount\": \"0.00\",\n" +
@@ -234,7 +246,7 @@ public class SearchService {
             "            \"type\": \"TICKETING\"\n" +
             "          }\n" +
             "        ],\n" +
-            "        \"grandTotal\": \"355.34\"\n" +
+            "        \"grandTotal\": \"365.34\"\n" +
             "      },\n" +
             "      \"pricingOptions\": {\n" +
             "        \"fareType\": [\n" +
@@ -252,8 +264,8 @@ public class SearchService {
             "          \"travelerType\": \"ADULT\",\n" +
             "          \"price\": {\n" +
             "            \"currency\": \"EUR\",\n" +
-            "            \"total\": \"355.34\",\n" +
-            "            \"base\": \"255.00\"\n" +
+            "            \"total\": \"365.34\",\n" +
+            "            \"base\": \"265.00\"\n" +
             "          },\n" +
             "          \"fareDetailsBySegment\": [\n" +
             "            {\n" +
@@ -280,34 +292,7 @@ public class SearchService {
             "        }\n" +
             "      ]\n" +
             "    }\n" +
-            "  ],\n" +
-            "  \"dictionaries\": {\n" +
-            "    \"locations\": {\n" +
-            "      \"BKK\": {\n" +
-            "        \"cityCode\": \"BKK\",\n" +
-            "        \"countryCode\": \"TH\"\n" +
-            "      },\n" +
-            "      \"MNL\": {\n" +
-            "        \"cityCode\": \"MNL\",\n" +
-            "        \"countryCode\": \"PH\"\n" +
-            "      },\n" +
-            "      \"SYD\": {\n" +
-            "        \"cityCode\": \"SYD\",\n" +
-            "        \"countryCode\": \"AU\"\n" +
-            "      }\n" +
-            "    },\n" +
-            "    \"aircraft\": {\n" +
-            "      \"320\": \"AIRBUS A320\",\n" +
-            "      \"321\": \"AIRBUS A321\",\n" +
-            "      \"333\": \"AIRBUS A330-300\"\n" +
-            "    },\n" +
-            "    \"currencies\": {\n" +
-            "      \"EUR\": \"EURO\"\n" +
-            "    },\n" +
-            "    \"carriers\": {\n" +
-            "      \"PR\": \"PHILIPPINE AIRLINES\"\n" +
-            "    }\n" +
-            "  }\n" +
+            "  ]\n" +
             "}";
 
     public SearchService() throws IOException {

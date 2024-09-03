@@ -1,7 +1,11 @@
 import React, { useContext } from "react";
-import { List, Card, Row, Col } from "antd";
+import { List, Card, Row, Col, Typography, Divider } from "antd";
 import FlightResultsContext from "../../contexts/FlightResultsContext";
 import { useNavigate } from "react-router-dom";
+import "./index.css";
+import dayjs from "dayjs";
+
+const { Title, Paragraph} = Typography;
 
 const Results: React.FC = () => {
     const { flightResults } = useContext(FlightResultsContext);
@@ -14,52 +18,59 @@ const Results: React.FC = () => {
         navigate('/details');
     };
 
+    const parseDuration = (duration: any) => {
+        const match = duration.match(/PT(\d+H)?(\d+M)?/);
+        const hours = match[1] ? parseInt(match[1].replace('H', '')) : 0;
+        const minutes = match[2] ? parseInt(match[2].replace('M', '')) : 0;
+        return `${hours}h ${minutes}m`;
+    };
+
     return (
-        <List
-            dataSource={flightResults.data}
-            renderItem={(offer: any) => (
-                <List.Item onClick={()=>handleClick(offer)} key={offer.id}>
-                    <Card>
-                        <Row>
-                            {offer.itineraries.map((itinerary: any) => (
-                                <React.Fragment key={itinerary.id}>
-                                    <Row>
-                                        <Col>
-                                            <p>Total time: {itinerary.duration}</p>
-                                            {itinerary.segments.map((segment: any) => (
-                                                <Card.Grid hoverable={false} key={segment.id}>
-                                                    <Row>
-                                                        <p>{segment.departure.at} - {segment.arrival.at}</p>
-                                                    </Row>
-                                                    <Row>
-                                                        <Col><p>{segment.departure.iataCode} - {segment.arrival.iataCode}</p></Col>
-                                                        <Col><p>{segment.duration}</p></Col>
-                                                    </Row>
-                                                </Card.Grid>
-                                            ))}
-                                        </Col>
-                                        <Col>
-                                            <Row>
-                                                <p>$ {offer.price.total} {offer.price.currency} Total</p>
-                                            </Row>
-                                            <Row>
-                                                <ul>
-                                                    {offer.travelerPricings.map((price: any) => (
-                                                        <li key={price.travelerId}>
-                                                            {price.travelerType} {price.travelerId}: $ {price.price.total} {price.price.currency}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                </React.Fragment>
-                            ))}
-                        </Row>
-                    </Card>
-                </List.Item>
-            )}
-        />
+        <div className="resultsContainer">
+            <List
+                dataSource={flightResults.data}
+                renderItem={(offer: any) => (
+                    <List.Item onClick={()=>handleClick(offer)} key={offer.id} className="clickable">
+                        {offer.itineraries.map((itinerary: any) => (
+                            <React.Fragment key={itinerary.id}>
+                                <Row>
+                                    <Col>
+                                        {/*<p>Total time: {dayjs(itinerary.duration).format('HH:mm')}</p>*/}
+                                        {itinerary.segments.map((segment: any) => (
+                                            <Card key={segment.id}>
+                                                <Row>
+                                                    <Paragraph>{dayjs(segment.departure.at).format('YYYY-MM-DD HH:mm')} - {dayjs(segment.arrival.at).format('YYYY-MM-DD HH:mm')}</Paragraph>
+                                                </Row>
+                                                <Row>
+                                                    <Col><p>{segment.departure.airportCommonName}({segment.departure.iataCode}) - {segment.arrival.airportCommonName}({segment.arrival.iataCode})</p></Col>
+                                                    <Divider type="vertical" />
+                                                    <Col><p>{parseDuration(segment.duration)}</p></Col>
+                                                </Row>
+                                            </Card>
+                                        ))}
+                                    </Col>
+                                    <Divider type="vertical" />
+                                    <Col>
+                                        <Row>
+                                            <p>$ {offer.price.total} {offer.price.currency} Total</p>
+                                        </Row>
+                                        <Row>
+                                            <ul>
+                                                {offer.travelerPricings.map((price: any) => (
+                                                    <li key={price.travelerId}>
+                                                        {price.travelerType} {price.travelerId}: $ {price.price.total} {price.price.currency}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </Row>
+                                    </Col>
+                                </Row>
+                            </React.Fragment>
+                        ))}
+                    </List.Item>
+                )}
+            />
+        </div>
     );
 };
 

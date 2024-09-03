@@ -19,7 +19,7 @@ public class flightOfferController {
     @GetMapping()
     public ResponseEntity<?> getFlightOffers(@RequestParam String originLocationCode, @RequestParam String destinationLocationCode,
      @RequestParam String departureDate, @RequestParam(required = false) String returnDate, @RequestParam Integer adults, @RequestParam String currencyCode, @RequestParam Boolean nonStop){
-        System.out.println(departureDate);
+
         try{
             String response = searchService.flightOfferSearch(originLocationCode,destinationLocationCode,departureDate
             ,returnDate,adults,currencyCode,nonStop);
