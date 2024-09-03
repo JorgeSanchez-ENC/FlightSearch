@@ -5,6 +5,7 @@ import SearchForm from './components/SearchForm';
 import { Route, Router, Routes,BrowserRouter } from 'react-router-dom';
 import Results from './components/Results';
 import { FlightResultProvider } from './contexts/FlightResultsContext';
+import DetailsPage from './components/DetailsPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
               <Routes>
                   <Route path='/' element={<SearchForm/>}></Route>
                   <Route path='/results' element={<Results></Results>}></Route>
+                  <Route path='/details' element={<DetailsPage></DetailsPage>}></Route>
               </Routes>
         </BrowserRouter>
 

@@ -1,16 +1,24 @@
 import React, { useContext } from "react";
 import { List, Card, Row, Col } from "antd";
 import FlightResultsContext from "../../contexts/FlightResultsContext";
+import { useNavigate } from "react-router-dom";
 
 const Results: React.FC = () => {
     const { flightResults } = useContext(FlightResultsContext);
+    const {setSelectedFlight} = useContext(FlightResultsContext);
+    const navigate = useNavigate();
 
-    console.log(flightResults);
+    const handleClick = (flightOffer : any) =>{
+        setSelectedFlight(flightOffer);
+        console.log(flightOffer);
+        navigate('/details');
+    };
+
     return (
         <List
             dataSource={flightResults.data}
             renderItem={(offer: any) => (
-                <List.Item>
+                <List.Item onClick={()=>handleClick(offer)} key={offer.id}>
                     <Card>
                         <Row>
                             {offer.itineraries.map((itinerary: any) => (
