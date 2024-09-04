@@ -1,5 +1,6 @@
 package com.flightsearch.backend.Services;
 
+import com.flightsearch.backend.Helpers.SorterHelper;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Map;
 
 @Service
@@ -43,6 +45,8 @@ public class SearchService {
             "      \"oneWay\": false,\n" +
             "      \"lastTicketingDate\": \"2021-11-01\",\n" +
             "      \"numberOfBookableSeats\": 9,\n" +
+            "      \"totalDuration\": \"PT21H35M\",\n" +
+            "      \"totalPrice\": \"362.34\",\n" +
             "      \"itineraries\": [\n" +
             "        {\n" +
             "          \"duration\": \"PT14H15M\",\n" +
@@ -172,6 +176,8 @@ public class SearchService {
             "      \"oneWay\": false,\n" +
             "      \"lastTicketingDate\": \"2021-11-01\",\n" +
             "      \"numberOfBookableSeats\": 9,\n" +
+            "      \"totalDuration\": \"PT20H35M\",\n" +
+            "      \"totalPrice\": \"365.34\",\n" +
             "      \"itineraries\": [\n" +
             "        {\n" +
             "          \"duration\": \"PT16H35M\",\n" +
@@ -340,9 +346,12 @@ public class SearchService {
         for(int i = 0; i < dataArray.length(); i++){
             JSONObject flightOffer = dataArray.getJSONObject(i);
             JSONArray itineraries = flightOffer.getJSONArray("itineraries");
+            Duration totalDuration = Duration.ZERO;
             for(int j = 0; j < itineraries.length(); j++){
                 JSONObject itinerary = itineraries.getJSONObject(j);
                 JSONArray segments = itinerary.getJSONArray("segments");
+                Duration duration = Duration.parse(itinerary.getString("duration"));
+                totalDuration.plus(duration);
                 for(int k = 0; k < segments.length(); k++){
                     JSONObject segment = segments.getJSONObject(k);
 
@@ -357,11 +366,24 @@ public class SearchService {
                     String carrierCode = segment.getString("carierCode");
                     String airlineName = airlineInformationService.airlineNameLookUp(carrierCode);
                     segment.put("airlineCommonName",airlineName);
-
                 }
             }
+            flightOffer.put("totalDuration",totalDuration.toString());
+            flightOffer.put("totalPrice",flightOffer.getJSONObject("price").getString("total"));
         }
 
         return jsonResponse.toString();
+    }
+
+    public JSONArray sort(String json, String mode){
+        JSONArray array = new JSONArray(json);
+
+        return switch (mode) {
+            case "price" -> SorterHelper.sort(array, "totalPrice", null);
+            case "duration" -> SorterHelper.sort(array, "totalDuration", null);
+            case "duration-price" -> SorterHelper.sort(array, "totalDuration", "totalPrice");
+            case "price-duration" -> SorterHelper.sort(array, "totalPrice", "totalDuration");
+            default -> array;
+        };
     }
 }

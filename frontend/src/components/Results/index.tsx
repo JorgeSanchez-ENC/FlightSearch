@@ -4,6 +4,9 @@ import FlightResultsContext from "../../contexts/FlightResultsContext";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
 import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(duration);
 
 const { Title, Paragraph} = Typography;
 
@@ -17,17 +20,18 @@ const Results: React.FC = () => {
         console.log(flightOffer);
         navigate('/details');
     };
+    console.log(flightResults.data);
 
-    const parseDuration = (duration: any) => {
-        const match = duration.match(/PT(\d+H)?(\d+M)?/);
-        const hours = match[1] ? parseInt(match[1].replace('H', '')) : 0;
-        const minutes = match[2] ? parseInt(match[2].replace('M', '')) : 0;
-        return `${hours}h ${minutes}m`;
-    };
 
     return (
        
             <Flex vertical className="resultsFlex" justify="center" align="center">
+                <Row justify={"start"}>
+                    <Title level={3}>Results</Title>
+                </Row>
+                <Row>
+
+                </Row>
                 <List
                     style={{width: '100%'}}
                     dataSource={flightResults.data}
@@ -45,9 +49,9 @@ const Results: React.FC = () => {
                                                             <Paragraph>{dayjs(segment.departure.at).format('YYYY-MM-DD HH:mm')} - {dayjs(segment.arrival.at).format('YYYY-MM-DD HH:mm')}</Paragraph>
                                                         </Row>
                                                         <Row>
-                                                            <Col><p>{segment.departure.airportCommonName}({segment.departure.iataCode}) - {segment.arrival.airportCommonName}({segment.arrival.iataCode})</p></Col>
+                                                            <Col><Paragraph>{segment.departure.airportCommonName}({segment.departure.iataCode}) - {segment.arrival.airportCommonName}({segment.arrival.iataCode})</Paragraph></Col>
                                                             <Divider type="vertical" style={{ height: '100%' }} />
-                                                            <Col><p>{parseDuration(segment.duration)}</p></Col>
+                                                            <Col><Paragraph>  {dayjs.duration(segment.duration).format('DD[d] HH[h] mm[m]')}</Paragraph></Col>
                                                         </Row>
                                                     </Card>
 
@@ -56,6 +60,9 @@ const Results: React.FC = () => {
                                         </Col>
                                         <Divider type="vertical" style={{ height: '20px' }} />
                                         <Col>
+                                            <Row>
+                                                <Title level={5}>Total time: {dayjs.duration(offer.totalDuration).format('DD[d] HH[h] mm[m]')}</Title>
+                                            </Row>
                                             <Row>
                                                 <Title level={4}>$ {offer.price.total} {offer.price.currency} Total</Title>
                                             </Row>
