@@ -1,16 +1,31 @@
 import React, {useContext} from "react";
 import FlightResultsContext from "../../contexts/FlightResultsContext";
-import { Card, Col, List, Row } from "antd";
+import { Card, Col, Divider, Flex, List, Row, Space, Typography } from "antd";
+import "./index.css";
+import dayjs from "dayjs";
+
+const { Title, Paragraph} = Typography;
 
 const DetailsPage: React.FC = () =>{
     const {selectedFlight} = useContext(FlightResultsContext);
 
     return(
-        <div>
-            <h1>Flights Details</h1>
+
+        <Flex vertical className="detailsFlex" >
+            <div>
+            <Row align={"middle"}>
+                <Col span={24}>
+                    <Title>Flight Details</Title>
+                
+                </Col>
+            </Row>
+
+            </div>
+            
             <Row>
-                <Col>
+                <Col span={17}>
                     <List
+                        itemLayout="vertical"
                         dataSource={selectedFlight.itineraries}
                         renderItem={(itinerary:any)=>(
                             <List.Item>
@@ -19,20 +34,21 @@ const DetailsPage: React.FC = () =>{
                                     .find((fare: { segmentId: any; })=>fare.segmentId === segment.id);
 
                                     return(
-                                        <Row>
-                                            <Card>
+                                        <Row style={{ marginBottom: '16px' }}>
+                                            <Card style={{ width: '80%' }}>
                                                 <Row>
-                                                    <Col>
-                                                        <p>Segment: {segment.id}</p> <br />
-                                                        <p>{segment.departure.at} - {segment.arrival.at}</p> <br />
-                                                        <p>{segment.departure.iataCode} - {segment.arrival.iataCode}</p> <br />
-                                                        <p>{segment.carrierCode}</p> <br />
-                                                        <p>Flight number: {segment.number}</p>
+                                                    <Col span={18}>
+                                                        <Title level={4}>Segment: {segment.id}</Title> 
+                                                        <Paragraph>{dayjs(segment.departure.at).format('YYYY-MM-DD HH:mm')} - {dayjs(segment.arrival.at).format('YYYY-MM-DD HH:mm')}</Paragraph>
+                                                        <Paragraph>{segment.departure.iataCode} - {segment.arrival.iataCode}</Paragraph>
+                                                        <Paragraph>{segment.carrierCode}</Paragraph>
+                                                        <Paragraph>Flight number: {segment.number}</Paragraph>
                                                     </Col>
-                                                    <Col>
-                                                        <p>Travelers fare details</p>
-                                                        <p>Cabin: {travelerFareDetails.cabin}</p>
-                                                        <p>Class: {travelerFareDetails.class}</p>
+                                                    
+                                                    <Col span={6}>
+                                                        <Title level={4}>Travelers fare details</Title>
+                                                        <Paragraph>Cabin: {travelerFareDetails.cabin}</Paragraph>
+                                                        <Paragraph>Class: {travelerFareDetails.class}</Paragraph>
                                                     </Col>
                                                 </Row>
 
@@ -47,17 +63,18 @@ const DetailsPage: React.FC = () =>{
                     >
                     </List>
                 </Col>
-                <Col>
-                        <h3>Price Breakdown</h3>
-                        <p>Base: $ {selectedFlight.price.base} {selectedFlight.price.currency}</p> <br />
-                        <p>Fees</p> <br />
+                <Divider type="vertical" style={{ height: '100%' }} />
+                <Col span={6}>
+                        <Title level={4}>Price Breakdown</Title>
+                        <Paragraph>Base: $ {selectedFlight.price.base} {selectedFlight.price.currency}</Paragraph> 
+                        <Paragraph>Fees</Paragraph> 
                         <ul>
                             {selectedFlight.price.fees.map((fee: any)=>(
                                 <li> {fee.type}: ${fee.amount} {selectedFlight.price.currency} </li>
                             ))}
                         </ul>
-                        <p>Total: $ {selectedFlight.price.total} {selectedFlight.price.currency}</p>
-                        <p>Price per traveler</p>
+                        <Paragraph>Total: $ {selectedFlight.price.total} {selectedFlight.price.currency}</Paragraph>
+                        <Paragraph>Price per traveler</Paragraph>
                         <ul>
                             {selectedFlight.travelerPricings.map((price: any) => (
                                 <li key={price.travelerId}>
@@ -67,7 +84,8 @@ const DetailsPage: React.FC = () =>{
                         </ul>
                 </Col>
             </Row>
-        </div>
+       </Flex>
+        
     );
 };
 

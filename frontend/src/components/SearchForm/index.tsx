@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import { Form, Button, DatePicker,InputNumber,Select,Checkbox, AutoCompleteProps, AutoComplete, Typography, Row, Col } from "antd";
+import { Form, Button, DatePicker,InputNumber,Select,Checkbox, AutoCompleteProps, AutoComplete, Typography, Row, Col, Flex } from "antd";
 import dayjs from "dayjs";
 import { RangePickerProps } from "antd/es/date-picker";
 import axios from "axios";
@@ -65,8 +65,8 @@ const SearchForm:React.FC = () =>{
     };
 
     return(
-        <div className="searchContainer">
-            <Row> 
+        <Flex vertical className="formFlex">
+            <Row align={"middle"}> 
                 <Col span={24}>
                 <Title level={3}> Flight Search</Title> 
                 </Col>
@@ -169,7 +169,7 @@ const SearchForm:React.FC = () =>{
                 </Col>
             </Row>
 
-        </div>
+        </Flex>
 
     )
 };

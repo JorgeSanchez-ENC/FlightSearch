@@ -1,15 +1,11 @@
-.resultsContainer{
+.detailsContainer{
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.clickable{
-    cursor: pointer;
+.detailsFlex{
+    width: 95vw;
+    height: 95vh;
 }
-
-li{
-    list-style: none;
-}
-
