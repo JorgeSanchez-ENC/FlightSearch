@@ -40,8 +40,8 @@ const DetailsPage: React.FC = () =>{
                                                     <Col span={18}>
                                                         <Title level={4}>Segment: {segment.id}</Title> 
                                                         <Paragraph>{dayjs(segment.departure.at).format('YYYY-MM-DD HH:mm')} - {dayjs(segment.arrival.at).format('YYYY-MM-DD HH:mm')}</Paragraph>
-                                                        <Paragraph>{segment.departure.iataCode} - {segment.arrival.iataCode}</Paragraph>
-                                                        <Paragraph>{segment.carrierCode}</Paragraph>
+                                                        <Paragraph>{segment.departure.airportCommonName}({segment.departure.iataCode}) - {segment.arrival.airportCommonName}({segment.arrival.iataCode})</Paragraph>
+                                                        <Paragraph>{segment.airlineCommonName} {segment.carrierCode}</Paragraph>
                                                         <Paragraph>Flight number: {segment.number}</Paragraph>
                                                     </Col>
                                                     
@@ -49,6 +49,16 @@ const DetailsPage: React.FC = () =>{
                                                         <Title level={4}>Travelers fare details</Title>
                                                         <Paragraph>Cabin: {travelerFareDetails.cabin}</Paragraph>
                                                         <Paragraph>Class: {travelerFareDetails.class}</Paragraph>
+                                                        <Paragraph>Ammenities:</Paragraph>
+                                                        
+                                                        <ul>
+                                                            {travelerFareDetails.ammenities?.map((ammenitie: any, index: any) => (
+                                                                <li key={index}>
+                                                                    {ammenitie.description}, {ammenitie.isChargeable? "chargeable" : "not chargeable"}
+                                                                </li>
+                                                            ))
+                                                            }
+                                                        </ul>
                                                     </Col>
                                                 </Row>
 

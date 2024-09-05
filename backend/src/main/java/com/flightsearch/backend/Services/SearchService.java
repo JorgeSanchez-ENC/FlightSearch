@@ -21,10 +21,10 @@ public class SearchService {
     AccessTokenService accessTokenService;
 
     @Autowired
-    static AirportCodeService airportCodeService;
+    AirportCodeService airportCodeService;
 
     @Autowired
-    static AirlineInformationService airlineInformationService;
+    AirlineInformationService airlineInformationService;
 
     OkHttpClient client = new OkHttpClient();
 
@@ -315,7 +315,8 @@ public class SearchService {
                 .addQueryParameter("departureDate",departureDate)
                 .addQueryParameter("adults",adults.toString())
                 .addQueryParameter("currencyCode", currencyCode )
-                .addQueryParameter("nonStop", nonStop.toString());
+                .addQueryParameter("nonStop", nonStop.toString())
+                .addQueryParameter("max","5");
         if(returnDate != null && !returnDate.isEmpty()){
             urlBuilder.addQueryParameter("returnDate", returnDate);
         }
@@ -337,7 +338,7 @@ public class SearchService {
 
     }
 
-    private static String addAirportAndAirlinesCommonNames(String originalJson) throws IOException {
+    private String addAirportAndAirlinesCommonNames(String originalJson) throws IOException {
         JSONObject jsonResponse =new JSONObject(originalJson);
         JSONArray dataArray = jsonResponse.getJSONArray("data");
 
@@ -349,7 +350,7 @@ public class SearchService {
                 JSONObject itinerary = itineraries.getJSONObject(j);
                 JSONArray segments = itinerary.getJSONArray("segments");
                 Duration duration = Duration.parse(itinerary.getString("duration"));
-                totalDuration.plus(duration);
+                totalDuration  = totalDuration.plus(duration);
                 for(int k = 0; k < segments.length(); k++){
                     JSONObject segment = segments.getJSONObject(k);
 
@@ -361,7 +362,7 @@ public class SearchService {
                     String arrAirportName = airportCodeService.airportNameSearchByKeyword(arrIATA);
                     segment.getJSONObject("arrival").put("airportCommonName",arrAirportName);
 
-                    String carrierCode = segment.getString("carierCode");
+                    String carrierCode = segment.getJSONObject("operating").getString("carrierCode");
                     String airlineName = airlineInformationService.airlineNameLookUp(carrierCode);
                     segment.put("airlineCommonName",airlineName);
                 }
