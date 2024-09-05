@@ -308,7 +308,7 @@ public class SearchService {
         String departureDate, String returnDate, Integer adults, String currencyCode, Boolean nonStop
     ) throws IOException {
         String token = accessTokenService.getAccessToken();
-
+        System.out.println(originLocationCode);
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v2/shopping/flight-offers").newBuilder()
                 .addQueryParameter("originLocationCode",originLocationCode)
                 .addQueryParameter("destinationLocationCode",destinationLocationCode)
@@ -327,14 +327,12 @@ public class SearchService {
                 .addHeader("Authorization","Bearer "+ token)
                 .build();
 
-        /*try(Response response = client.newCall(request).execute()){
+        try(Response response = client.newCall(request).execute()){
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
             assert response.body() != null;
             return addAirportAndAirlinesCommonNames(response.body().string());
-        }*/
-
-        return mockResponse;
+        }
 
 
     }

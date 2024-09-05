@@ -79,13 +79,12 @@ public class AirportCodeService {
                 .addHeader("Authorization","Bearer "+ token)
                 .build();
 
-        /*try(Response response = client.newCall(request).execute()){
+        try(Response response = client.newCall(request).execute()){
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
             assert response.body() != null;
-            //return response.body().string();
+            return response.body().string();
 
-        }*/
-        return mockResponse;
+        }
     }
 
     public List<Map<String,String>> airportCodeSearchByKeyword(String keyword) throws IOException {
