@@ -13,10 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class SearchService {
+
+    List<JSONObject> flightOffers;
+
     @Autowired
     AccessTokenService accessTokenService;
 
@@ -304,8 +308,8 @@ public class SearchService {
     public SearchService() throws IOException {
     }
 
-    public String flightOfferSearch(String originLocationCode, String destinationLocationCode,
-        String departureDate, String returnDate, Integer adults, String currencyCode, Boolean nonStop
+    public List<JSONObject> flightOfferSearch(String originLocationCode, String destinationLocationCode,
+                                              String departureDate, String returnDate, Integer adults, String currencyCode, Boolean nonStop
     ) throws IOException {
         String token = accessTokenService.getAccessToken();
         System.out.println(originLocationCode);
@@ -332,13 +336,18 @@ public class SearchService {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
             assert response.body() != null;
-            return addAirportAndAirlinesCommonNames(response.body().string());
+            JSONObject modifiedJson = addAirportAndAirlinesCommonNames(response.body().string());
+            JSONArray data = modifiedJson.getJSONArray("data");
+            for(int i = 0; i<data.length(); i++){
+                flightOffers.add(data.getJSONObject(i));
+            }
+            return flightOffers;
         }
 
 
     }
 
-    private String addAirportAndAirlinesCommonNames(String originalJson) throws IOException {
+    private JSONObject addAirportAndAirlinesCommonNames(String originalJson) throws IOException {
         JSONObject jsonResponse =new JSONObject(originalJson);
         JSONArray dataArray = jsonResponse.getJSONArray("data");
 
@@ -371,7 +380,7 @@ public class SearchService {
             flightOffer.put("totalPrice",flightOffer.getJSONObject("price").getString("total"));
         }
 
-        return jsonResponse.toString();
+        return jsonResponse;
     }
 
     public JSONArray sort(String json, String mode){
