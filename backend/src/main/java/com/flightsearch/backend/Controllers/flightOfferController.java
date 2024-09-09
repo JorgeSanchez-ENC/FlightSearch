@@ -27,17 +27,17 @@ public class flightOfferController {
         try{
             List<JSONObject> response = searchService.flightOfferSearch(originLocationCode,destinationLocationCode,departureDate
             ,returnDate,adults,currencyCode,nonStop);
-            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(response);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(response.toString());
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     @GetMapping("/sort")
-    public ResponseEntity<?> sortFlightOffers(@RequestParam String type, @RequestParam String info ){
+    public ResponseEntity<?> sortFlightOffers(@RequestParam String type){
         try{
-            JSONArray response = searchService.sort(info,type);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            List<JSONObject> response = searchService.sort(type);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(response.toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

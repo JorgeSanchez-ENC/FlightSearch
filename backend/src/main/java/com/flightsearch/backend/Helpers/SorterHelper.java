@@ -4,25 +4,39 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.time.Duration;
 
 public class SorterHelper {
-    public static JSONArray sort(JSONArray array, String key1, String key2){
-        List<JSONObject> list = new ArrayList<>();
-
-
-        for(int i = 0; i<array.length(); i++){
-            list.add(array.getJSONObject(i));
-        }
+    public static void sort(List<JSONObject> list, String key1, String key2){
 
         list.sort((o1, o2) -> {
-            int firstComp = o1.getString(key1).compareTo(o2.getString(key1));
-            if (key2 == null || firstComp != 0) {
-                return firstComp;
-            } else {
-                return o1.getString(key2).compareTo(o2.getString(key2));
+            int c1 = 0;
+            if(key1.equals("totalPrice")){
+                c1 = Float.compare(o1.getFloat("totalPrice"), o2.getFloat("totalPrice") );
+            }else if (key1.equals("totalDuration")){
+                Duration d1 = Duration.parse(o1.getString("totalDuration"));
+                Duration d2 = Duration.parse(o2.getString("totalDuration"));
+                c1 = d1.compareTo(d2);
             }
+
+            if(key2 == null || c1 != 0){
+                return c1;
+            }
+
+            int c2 = 0;
+            if(key2.equals("totalPrice")){
+                c2 = Float.compare(o1.getFloat("totalPrice"), o2.getFloat("totalPrice") );
+            }else if(key2.equals("totalDuration")){
+                Duration d1 = Duration.parse(o1.getString("totalDuration"));
+                Duration d2 = Duration.parse(o2.getString("totalDuration"));
+                c2 = d1.compareTo(d2);
+            }
+
+            return c2;
         });
-        return new JSONArray(list);
+        for (JSONObject jsonObject : list) {
+            System.out.println(jsonObject.getString("id"));
+        }
     }
 
 }

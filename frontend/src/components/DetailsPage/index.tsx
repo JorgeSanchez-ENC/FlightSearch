@@ -4,11 +4,12 @@ import { Card, Col, Divider, Flex, List, Row, Space, Typography } from "antd";
 import "./index.css";
 import dayjs from "dayjs";
 
-const { Title, Paragraph} = Typography;
+const { Title, Paragraph, Text} = Typography;
 
 const DetailsPage: React.FC = () =>{
     const {selectedFlight} = useContext(FlightResultsContext);
-
+    const traveler = selectedFlight.travelerPricings[0];
+    console.log(traveler);
     return(
 
         <Flex vertical className="detailsFlex" >
@@ -27,39 +28,59 @@ const DetailsPage: React.FC = () =>{
                     <List
                         itemLayout="vertical"
                         dataSource={selectedFlight.itineraries}
-                        renderItem={(itinerary:any)=>(
-                            <List.Item>
-                                {itinerary.segments.map((segment:any)=>{
-                                    const travelerFareDetails = selectedFlight.travelerPricings.flatMap((traveler: { fareDetailsBySegment: any; })=>traveler.fareDetailsBySegment)
-                                    .find((fare: { segmentId: any; })=>fare.segmentId === segment.id);
-
+                        renderItem={(itinerary:any, itineraryIndex : any)=>(
+                            
+                            <List.Item key={itineraryIndex}>
+                                <Title level={3}> {itineraryIndex === 0 ? "Departure" : "Return"}</Title>
+                                {itinerary.segments.map((segment:any, segmentIndex: any)=>{
                                     return(
-                                        <Row style={{ marginBottom: '16px' }}>
+                                        <Row style={{ marginBottom: '16px' }} key={segmentIndex}>
                                             <Card style={{ width: '80%' }}>
-                                                <Row>
+                                                <Row >
                                                     <Col span={18}>
-                                                        <Title level={4}>Segment: {segment.id}</Title> 
-                                                        <Paragraph>{dayjs(segment.departure.at).format('YYYY-MM-DD HH:mm')} - {dayjs(segment.arrival.at).format('YYYY-MM-DD HH:mm')}</Paragraph>
-                                                        <Paragraph>{segment.departure.airportCommonName}({segment.departure.iataCode}) - {segment.arrival.airportCommonName}({segment.arrival.iataCode})</Paragraph>
-                                                        <Paragraph>{segment.airlineCommonName} {segment.carrierCode}</Paragraph>
-                                                        <Paragraph>Flight number: {segment.number}</Paragraph>
+                                                        <Title level={4}>Segment</Title> 
+                                                        <Row >
+                                                            <Col span={12}><Text strong> Dept. date</Text></Col>
+                                                            <Col span={12}><Text strong >Arr. date</Text></Col>
+                                                        </Row>
+                                                        <Row className="marginBottom">
+                                                            <Col span={12}><Text>{dayjs(segment.departure.at).format('YYYY-MM-DD HH:mm')} </Text></Col>
+                                                            <Col span={12}><Text>{dayjs(segment.arrival.at).format('YYYY-MM-DD HH:mm')}</Text></Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col span={12}><Text strong>Dept. airport</Text></Col>
+                                                            <Col span={12}><Text strong>Arr. airport</Text></Col>
+                                                        </Row>
+                                                        <Row className="marginBottom">
+                                                            <Col span={12}><Text>{segment.departure.airportCommonName}({segment.departure.iataCode}) </Text></Col>
+                                                            <Col span={12}><Text>{segment.arrival.airportCommonName}({segment.arrival.iataCode})</Text></Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col span={12}><Text strong>Carrier: </Text><Text>{segment.airlineCommonName} {segment.carrierCode} </Text></Col>
+                                                            <Col span={12}><Text strong>Flight number: </Text><Text>{segment.number}</Text></Col>
+                                                        </Row>
                                                     </Col>
-                                                    
-                                                    <Col span={6}>
-                                                        <Title level={4}>Travelers fare details</Title>
-                                                        <Paragraph>Cabin: {travelerFareDetails.cabin}</Paragraph>
-                                                        <Paragraph>Class: {travelerFareDetails.class}</Paragraph>
-                                                        <Paragraph>Ammenities:</Paragraph>
-                                                        
-                                                        <ul>
-                                                            {travelerFareDetails.ammenities?.map((ammenitie: any, index: any) => (
-                                                                <li key={index}>
-                                                                    {ammenitie.description}, {ammenitie.isChargeable? "chargeable" : "not chargeable"}
-                                                                </li>
-                                                            ))
-                                                            }
-                                                        </ul>
-                                                    </Col>
+                                                    {traveler.fareDetailsBySegment.filter((fareDetail :any) => fareDetail.segmentId === segment.id)
+                                                    .map((fareDetail:any, fareIndex:any) => (
+                                                        <Col span={6} key={fareIndex}>
+                                                            <Title level={4}>Travelers fare details</Title>
+                                                            <Paragraph>Cabin: {fareDetail.cabin}</Paragraph>
+                                                            <Paragraph>Class: {fareDetail.class}</Paragraph>
+                                                            <Paragraph>Ammenities:</Paragraph>
+                                                            {fareDetail.ammenities ? (
+                                                                <ul>
+                                                                    {fareDetail.ammenities.map((ammenitie:any, index:any) => (
+                                                                        <li key={index}>
+                                                                            {ammenitie.description}, {ammenitie.isChargeable ? "chargeable" : "not chargeable"}
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            ) : (
+                                                                <Paragraph>No ammenities available</Paragraph>
+                                                            )}
+                                                        </Col>
+                                                    ))}
+                              
                                                 </Row>
 
                                             </Card>

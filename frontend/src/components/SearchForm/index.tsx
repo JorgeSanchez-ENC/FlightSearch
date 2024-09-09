@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import { Form, Button, DatePicker,InputNumber,Select,Checkbox, AutoCompleteProps, AutoComplete, Typography, Row, Col, Flex } from "antd";
+import { Form, Button, DatePicker,InputNumber,Select,Checkbox, AutoCompleteProps, AutoComplete, Typography, Row, Col, Flex, Spin } from "antd";
 import dayjs from "dayjs";
 import { RangePickerProps } from "antd/es/date-picker";
 import axios from "axios";
@@ -13,6 +13,7 @@ const { Title, Paragraph} = Typography;
 const SearchForm:React.FC = () =>{
     const {setFlightResults} = useContext(FlightResultsContext);
     const [options, setOptions] = React.useState<AutoCompleteProps['options']>([]);
+    const [spinning, setSpinning] = React.useState(false);
     const navigate = useNavigate();
 
     const handleSearch = async (keyword: string) =>{
@@ -42,6 +43,7 @@ const SearchForm:React.FC = () =>{
     };
 
     const handleSubmit = async (values:any) =>{
+        setSpinning(true);
         try{
             console.log(values);
             const response = await axios.get('http://localhost:8080/flightOffer',{
@@ -61,11 +63,14 @@ const SearchForm:React.FC = () =>{
             navigate('/results');
         }catch(error){
             console.log(error);
+        }finally{
+            setSpinning(false)
         }
     };
 
     return(
         <Flex vertical className="formFlex">
+            <Spin spinning={spinning} fullscreen />
             <Row align={"middle"}> 
                 <Col span={24}>
                 <Title level={3}> Flight Search</Title> 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -311,8 +312,8 @@ public class SearchService {
     public List<JSONObject> flightOfferSearch(String originLocationCode, String destinationLocationCode,
                                               String departureDate, String returnDate, Integer adults, String currencyCode, Boolean nonStop
     ) throws IOException {
+        flightOffers = new ArrayList<>();
         String token = accessTokenService.getAccessToken();
-        System.out.println(originLocationCode);
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v2/shopping/flight-offers").newBuilder()
                 .addQueryParameter("originLocationCode",originLocationCode)
                 .addQueryParameter("destinationLocationCode",destinationLocationCode)
@@ -371,7 +372,7 @@ public class SearchService {
                     String arrAirportName = airportCodeService.airportNameSearchByKeyword(arrIATA);
                     segment.getJSONObject("arrival").put("airportCommonName",arrAirportName);
 
-                    String carrierCode = segment.getJSONObject("operating").getString("carrierCode");
+                    String carrierCode = segment.getString("carrierCode");
                     String airlineName = airlineInformationService.airlineNameLookUp(carrierCode);
                     segment.put("airlineCommonName",airlineName);
                 }
@@ -383,15 +384,15 @@ public class SearchService {
         return jsonResponse;
     }
 
-    public JSONArray sort(String json, String mode){
-        JSONArray array = new JSONArray(json);
+    public List<JSONObject> sort(String mode){
 
-        return switch (mode) {
-            case "price" -> SorterHelper.sort(array, "totalPrice", null);
-            case "duration" -> SorterHelper.sort(array, "totalDuration", null);
-            case "duration-price" -> SorterHelper.sort(array, "totalDuration", "totalPrice");
-            case "price-duration" -> SorterHelper.sort(array, "totalPrice", "totalDuration");
-            default -> array;
+        switch (mode) {
+            case "price" -> SorterHelper.sort(this.flightOffers, "totalPrice", null);
+            case "duration" -> SorterHelper.sort(this.flightOffers, "totalDuration", null);
+            case "duration-price" -> SorterHelper.sort(this.flightOffers, "totalDuration", "totalPrice");
+            case "price-duration" -> SorterHelper.sort(this.flightOffers, "totalPrice", "totalDuration");
         };
+
+        return this.flightOffers;
     }
 }
