@@ -1,0 +1,15 @@
+.detailsContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.detailsFlex{
+    width: 95vw;
+    height: 95vh;
+}
+
+.marginBottom{
+    margin-bottom: 5px;
+}

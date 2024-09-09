@@ -1,25 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import SearchForm from './components/SearchForm';
+import { Route, Routes,BrowserRouter } from 'react-router-dom';
+import Results from './components/Results';
+import { FlightResultProvider } from './contexts/FlightResultsContext';
+import DetailsPage from './components/DetailsPage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <FlightResultProvider>
+          <BrowserRouter>
+              <Routes>
+                  <Route path='/' element={<SearchForm/>}></Route>
+                  <Route path='/results' element={<Results></Results>}></Route>
+                  <Route path='/details' element={<DetailsPage></DetailsPage>}></Route>
+              </Routes>
+        </BrowserRouter>
+
+    </FlightResultProvider>
+
+
   );
 }
 
