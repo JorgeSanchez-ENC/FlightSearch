@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { List, Card, Row, Col, Typography, Divider, Flex, Button, Radio, RadioChangeEvent } from "antd";
 import FlightResultsContext from "../../contexts/FlightResultsContext";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,13 @@ const { Title, Paragraph, Text} = Typography;
 const Results: React.FC = () => {
     const { flightResults,setFlightResults } = useContext(FlightResultsContext);
     const {setSelectedFlight} = useContext(FlightResultsContext);
+    const [visibleResults, setVisibleResults] = useState(5);
     const navigate = useNavigate();
+
+    const loadMore = () => {
+        setVisibleResults((prev : any)=> prev+5);
+
+    }
 
     const handleClick = (flightOffer : any) =>{
         setSelectedFlight(flightOffer);
@@ -67,7 +73,7 @@ const Results: React.FC = () => {
                 <div style={{height:' 70vh', overflowY: 'scroll', display: 'flex', justifyContent: 'center'}}>
                     <List
                         style={{width: '90%', maxHeight:'70%'}}
-                        dataSource={flightResults}
+                        dataSource={flightResults.slice(0,visibleResults)}
                         renderItem={(offer: any) => (
                             <List.Item onClick={()=>handleClick(offer)} key={offer.id} className="clickable">
                                 {offer.itineraries.map((itinerary: any, itineraryIndex : any) => (
@@ -127,6 +133,15 @@ const Results: React.FC = () => {
                         )}
                     />
                 </div>
+
+                {visibleResults < flightResults.length && (
+                    <div style={{textAlign: 'center', marginTop: '20px', width: "20%"}}>
+                        <Button onClick={loadMore}>
+                            Load more
+                        </Button>
+
+                    </div>
+                )}
 
             </Flex>
 

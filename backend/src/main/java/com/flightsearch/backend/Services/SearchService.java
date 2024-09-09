@@ -47,7 +47,7 @@ public class SearchService {
                 .addQueryParameter("adults",adults.toString())
                 .addQueryParameter("currencyCode", currencyCode )
                 .addQueryParameter("nonStop", nonStop.toString())
-                .addQueryParameter("max","5");
+                .addQueryParameter("max","10");
         if(returnDate != null && !returnDate.isEmpty()){
             urlBuilder.addQueryParameter("returnDate", returnDate);
         }
