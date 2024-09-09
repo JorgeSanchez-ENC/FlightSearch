@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import FlightResultsContext from "../../contexts/FlightResultsContext";
-import { Card, Col, Divider, Flex, List, Row, Space, Typography } from "antd";
+import { Card, Col, Divider, Flex, List, Row, Typography } from "antd";
 import "./index.css";
 import dayjs from "dayjs";
 

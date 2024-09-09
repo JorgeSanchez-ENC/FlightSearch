@@ -2,7 +2,6 @@ package com.flightsearch.backend.Controllers;
 
 
 import com.flightsearch.backend.Services.SearchService;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

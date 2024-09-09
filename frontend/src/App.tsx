@@ -1,8 +1,7 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import SearchForm from './components/SearchForm';
-import { Route, Router, Routes,BrowserRouter } from 'react-router-dom';
+import { Route, Routes,BrowserRouter } from 'react-router-dom';
 import Results from './components/Results';
 import { FlightResultProvider } from './contexts/FlightResultsContext';
 import DetailsPage from './components/DetailsPage';
