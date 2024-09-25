@@ -1,12 +1,16 @@
 package com.flightsearch.backend.Services;
 
 import com.flightsearch.backend.Helpers.SorterHelper;
+import java.util.HashMap;
+import java.util.Map;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +22,12 @@ import java.util.List;
 @Service
 public class SearchService {
 
+    private static final Logger log = LoggerFactory.getLogger(SearchService.class);
+
     List<JSONObject> flightOffers;
 
     @Autowired
-    AccessTokenService accessTokenService;
+    AccessTokenHandler accessTokenHandler;
 
     @Autowired
     AirportCodeService airportCodeService;
@@ -38,8 +44,9 @@ public class SearchService {
     public List<JSONObject> flightOfferSearch(String originLocationCode, String destinationLocationCode,
                                               String departureDate, String returnDate, Integer adults, String currencyCode, Boolean nonStop
     ) throws IOException {
+        long startTime = System.nanoTime();
         flightOffers = new ArrayList<>();
-        String token = accessTokenService.getAccessToken();
+        String token = accessTokenHandler.getAccessToken();
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v2/shopping/flight-offers").newBuilder()
                 .addQueryParameter("originLocationCode",originLocationCode)
                 .addQueryParameter("destinationLocationCode",destinationLocationCode)
@@ -63,11 +70,18 @@ public class SearchService {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
             assert response.body() != null;
-            JSONObject modifiedJson = addAirportAndAirlinesCommonNames(response.body().string());
+            String responseBody = response.body().string();
+            long elapsedTime = Duration.ofNanos(System.nanoTime() - startTime).toMillis();
+            log.trace("Flight-Offers API call elapsed time {}ms", String.format("%,d", elapsedTime));
+
+            startTime = System.nanoTime();
+            JSONObject modifiedJson = addAirportAndAirlinesCommonNames(responseBody);
             JSONArray data = modifiedJson.getJSONArray("data");
             for(int i = 0; i<data.length(); i++){
                 flightOffers.add(data.getJSONObject(i));
             }
+            elapsedTime = Duration.ofNanos(System.nanoTime() - startTime).toMillis();
+            log.trace("Flight-Offers AddCommonNames elapsed time {}ms", String.format("%,d", elapsedTime));
             return flightOffers;
         }
 
@@ -77,6 +91,9 @@ public class SearchService {
     private JSONObject addAirportAndAirlinesCommonNames(String originalJson) throws IOException {
         JSONObject jsonResponse =new JSONObject(originalJson);
         JSONArray dataArray = jsonResponse.getJSONArray("data");
+        Map<String, String> deptAirportNamesByIATACode = new HashMap<>();
+        Map<String, String> arrAirportNamesByIATACode = new HashMap<>();
+        Map<String, String> airlineNamesByCarrierCode = new HashMap<>();
 
         for(int i = 0; i < dataArray.length(); i++){
             JSONObject flightOffer = dataArray.getJSONObject(i);
@@ -91,15 +108,27 @@ public class SearchService {
                     JSONObject segment = segments.getJSONObject(k);
 
                     String deptIATA = segment.getJSONObject("departure").getString("iataCode");
-                    String deptAirportName = airportCodeService.airportNameSearchByKeyword(deptIATA);
+                    String deptAirportName = deptAirportNamesByIATACode.get(deptIATA);
+                    if (deptAirportName == null) {
+                        deptAirportName = airportCodeService.airportNameSearchByKeyword(deptIATA);
+                        deptAirportNamesByIATACode.put(deptIATA, deptAirportName);
+                    }
                     segment.getJSONObject("departure").put("airportCommonName",deptAirportName);
 
                     String arrIATA = segment.getJSONObject("arrival").getString("iataCode");
-                    String arrAirportName = airportCodeService.airportNameSearchByKeyword(arrIATA);
+                    String arrAirportName = arrAirportNamesByIATACode.get(arrIATA);
+                    if (arrAirportName == null) {
+                        arrAirportName = airportCodeService.airportNameSearchByKeyword(arrIATA);
+                        arrAirportNamesByIATACode.put(arrIATA, arrAirportName);
+                    }
                     segment.getJSONObject("arrival").put("airportCommonName",arrAirportName);
 
                     String carrierCode = segment.getString("carrierCode");
-                    String airlineName = airlineInformationService.airlineNameLookUp(carrierCode);
+                    String airlineName = airlineNamesByCarrierCode.get(carrierCode);
+                    if (airlineName == null) {
+                        airlineName = airlineInformationService.airlineNameLookUp(carrierCode);
+                        airlineNamesByCarrierCode.put(carrierCode, airlineName);
+                    }
                     segment.put("airlineCommonName",airlineName);
                 }
             }
