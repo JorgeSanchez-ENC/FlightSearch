@@ -18,13 +18,13 @@ import java.util.Map;
 @Service
 public class AirportCodeService {
     @Autowired
-    AccessTokenService accessTokenService;
+    AccessTokenHandler accessTokenHandler;
 
     OkHttpClient client = new OkHttpClient();
 
 
     public String commonSearch(String keyword) throws IOException {
-        String token = accessTokenService.getAccessToken();
+        String token = accessTokenHandler.getAccessToken();
 
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v1/reference-data/locations").newBuilder()
                 .addQueryParameter("subType","AIRPORT")

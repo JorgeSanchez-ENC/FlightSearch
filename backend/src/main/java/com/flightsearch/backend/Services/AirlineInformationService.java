@@ -14,12 +14,12 @@ import java.io.IOException;
 @Service
 public class AirlineInformationService {
     @Autowired
-    AccessTokenService accessTokenService;
+    AccessTokenHandler accessTokenHandler;
 
     OkHttpClient client = new OkHttpClient();
 
     public String airlineNameLookUp(String airlineCode) throws IOException {
-        String token = accessTokenService.getAccessToken();
+        String token = accessTokenHandler.getAccessToken();
 
         HttpUrl.Builder urlBuilder = HttpUrl.parse("https://test.api.amadeus.com/v1/reference-data/airlines").newBuilder()
                 .addQueryParameter("airlineCodes",airlineCode);
